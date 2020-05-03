@@ -1,8 +1,8 @@
 import numpy as np
 
-def matrix_rank(A, eps=1e-12):
-    u, s, vh = np.linalg.svd(A)
-    return len([x for x in s if abs(x) > eps])
+def matrix_rank(A):
+    return np.linalg.matrix_rank(A)
+
 	
 def main(A):
 	print('finding rank of matrix:\n',A)
