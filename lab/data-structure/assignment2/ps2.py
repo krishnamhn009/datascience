@@ -251,7 +251,7 @@ class HashTable:
 
         result = "---------- trendCity: ----------\n"
         if len(visitorsList):
-            result += str(op[1]) + " visitors from " + str(op[0]) + " visiting today\n"
+            result += str(op[1]) + " visitors from " + str(op[0]) +" "+ dateToString + "\n"
         else:
             result += "No visitors visiting today\n"
 
@@ -317,7 +317,7 @@ if __name__ == "__main__":
             themePark.writeOutputFile(result)
         elif prompt.find("trendCity") >= 0:
             now = themePark.getLatestVisitDateFromInputFile()
-            result=ht.cityVisitor(now)
+            result = ht.cityVisitor(now)
             result = themePark.writeOutputFile(result)
         elif prompt.find("birthdayVisitor") >= 0:
             fields = prompt.split(":")
