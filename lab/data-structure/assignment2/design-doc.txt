@@ -21,3 +21,4 @@ I am calculating the hash of a string visitor name as a key, which contains only
  =>serach operation by name=> For search in hashtable by key will take O(1) where search in associated linked list will take O(n)
  =>for Visitor Count: here all row will be checked in hashtable and linked list also be traversed.So time complexity is visit of each row hashtable + traversing singly linked list
  =>for Trending City and Birthday List : In thi case also ,all rows will be checked in hashtable and linked list also be traversed.So time complexity is visit of each row hashtable + traversing singly linked list
+ => total time complexity for this program is O(n^2)
