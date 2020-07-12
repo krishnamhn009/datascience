@@ -45,6 +45,11 @@ class ThemePark:
             prompts.append(x.rstrip())
         return prompts
 
+    def writeOutputFile(content):
+        f = open(getfolderPath() + "\\outputPS2.txt", "a")
+        f.write(content)
+        f.close()
+
     def readInputFile():
         f = open(getfolderPath() + "\\inputPS2.txt", "r")
         visitorList = []
@@ -132,6 +137,7 @@ class HashTable:
 
     # insert visitor
     def insertVisitor(self, key, value):
+        result = ""
         index = self.hashing(key)
         node = Node(value)
         if len(self.table[index]) == 0:
@@ -146,16 +152,21 @@ class HashTable:
             laste.nextval = node
 
         self.totalCount += 1
-        print("...............insert................")
-        print("Total visitor details entered:", self.totalCount)
-        print(".....................................")
+        result += "...............insert................\n"
+        result += "Total visitor details entered:" + str(self.totalCount) + "\n"
+        result += ".....................................\n"
+        return result
 
     # find visitor
     def findVisitor(self, name=None):
         index = self.hashing(name)
-        print("---------- findVisitor: ----------")
+        resultPrint = "---------- findVisitor: ----------\n"
         if len(self.table[index]) == 0:
-            print("no visitors with name : ", name, "found visiting on 12-Jan-2020")
+            resultPrint += (
+                "no visitors with name : ",
+                name,
+                " found visiting on 12-Jan-2020\n",
+            )
         else:
             nodes = self.table[index]
             visitorsList = []
@@ -167,34 +178,40 @@ class HashTable:
                     visitorsList.append(printval.dataval)
                 printval = printval.nextval
 
-            print(
-                len(visitorsList),
-                " visitors with name",
-                name,
-                "found visiting on",
-                datetime.date.today(),
+            resultPrint += (
+                str(len(visitorsList))
+                + " visitors with name "
+                + name
+                + " found visiting on "
+                + datetime.date.today().strftime("%d-%b-%Y")
+                + "\n"
             )
             for v in visitorsList:
-                print(v.fullName, ",", v.homeCity, ",", v.phoneNumber)
-#visitor count
+                resultPrint += (
+                    v.fullName + "," + v.homeCity + "," + v.phoneNumber + "\n"
+                )
+
+        return resultPrint
+
+    # visitor count
     def visitorCount(self, visitDate=None):
         totalVisitors = 0
+        vDate = stringToDate(visitDate, "%d-%b-%Y")
+        result = "---------- visitorCount: ----------\n"
         if visitDate is None:
-            print('Invalid visit date')
+            print("Invalid visit date")
         else:
             for row in self.table:
                 if len(row) != 0:
                     head = row[0].headval
                     while head is not None:
-                        vDate = stringToDate(visitDate, "%d-%b-%Y")
                         if stringToDate(head.dataval.dateOfVisit, "%d-%b-%Y") == vDate:
                             totalVisitors += 1
                         head = head.nextval
 
-        
-        print("---------- visitorCount: ----------")
-        print(totalVisitors, " visitors found visiting on", visitDate)
-        print("-----------------------------")
+        result += str(totalVisitors) + " visitors found visiting on " + visitDate + "\n"
+        result += "-----------------------------\n"
+        return result
 
     def cityVisitor(self):
         max = 0
@@ -219,13 +236,14 @@ class HashTable:
                     max = length
             op = (k, max)
 
-        print("---------- trendCity: ----------")
+        result = "---------- trendCity: ----------\n"
         if len(visitorsList):
-            print(op[1], "visitors from", op[0], "visiting today")
+            result += op[1] + " visitors from " + op[0] + " visiting today\n"
         else:
-            print("No visitors visiting today")
+            result += "No visitors visiting today\n"
 
-        print("-----------------------------")
+        result += "-----------------------------\n"
+        return result
 
     # not completed yet
     def birthdayVisitor(self, birthDateFrom, birthDateTo):
@@ -246,16 +264,18 @@ class HashTable:
                         visitorsList.append(printval.dataval)
                     printval = printval.nextval
 
-        print("---------- birthdayVisitor: ----------")
-        print(
-            len(visitorsList),
-            " visitors have upcoming birthdays between",
-            birthDateFrom,
-            "and ",
-            birthDateTo,
+        result = "---------- birthdayVisitor: ----------\n"
+        result += (
+            str(len(visitorsList))
+            + " visitors have upcoming birthdays between "
+            + birthDateFrom
+            + " and "
+            + birthDateTo
+            + "\n"
         )
         for v in visitorsList:
-            print(v.fullName, ",", v.dateOfBirth, ",", v.phoneNumber)
+            result += v.fullName + "," + v.dateOfBirth + "," + v.phoneNumber + "\n"
+        return result
 
 
 # Driver Code
@@ -269,19 +289,24 @@ if __name__ == "__main__":
 
     for visitor in visitors:
         firstName = visitor.fullName.split(" ")[0]  # first name is key
-        ht.insertVisitor(firstName, visitor)
+        result = ht.insertVisitor(firstName, visitor)
+        themePark.writeOutputFile(result)
 
     prompts = themePark.readPromptsFile()
     for prompt in prompts:
         if prompt.find("findVisitor") >= 0:
             fields = prompt.split(":")
-            ht.findVisitor(fields[1].strip())
+            result = ht.findVisitor(fields[1].strip())
+            themePark.writeOutputFile(result)
         elif prompt.find("visitorCount") >= 0:
             fields = prompt.split(":")
-            ht.visitorCount(fields[1].strip())
+            result = ht.visitorCount(fields[1].strip())
+            themePark.writeOutputFile(result)
         elif prompt.find("trendCity") >= 0:
-            ht.cityVisitor()
+            result=ht.cityVisitor()
+            result = themePark.writeOutputFile(result)
         elif prompt.find("birthdayVisitor") >= 0:
             fields = prompt.split(":")
-            ht.birthdayVisitor(fields[1].strip(), fields[2].strip())
+            result = ht.birthdayVisitor(fields[1].strip(), fields[2].strip())
+            themePark.writeOutputFile(result)
 
