@@ -1,0 +1,14 @@
+1.Calculation of the hash of a string
+The good and widely used way to define the hash of a string s of length n is
+hash(s)=s[0]+s[1]⋅p+s[2]⋅p2+...+s[n−1]⋅pn−1modm=∑i=0n−1s[i]⋅pimodm,
+where p and m are some chosen, positive numbers. I am using polynomial rolling hash function.
+
+It is reasonable to make p a prime number roughly equal to the number of characters in the input alphabet. For example, if the input is composed of only lowercase letters of the English alphabet, p=31 is a good choice. If the input may contain both uppercase and lowercase letters, then p=53 is a possible choice. I have used here p=31.
+
+Obviously m should be a large number since the probability of two random strings colliding is about ≈1m. Sometimes m=2^64 is chosen, since then the integer overflows of 64-bit integers work exactly like the modulo operation. However, there exists a method, which generates colliding strings (which work independently from the choice of p). So in practice, m=2^64 is not recommended. A good choice for m is some large prime number. The code in this article will just use m=109+9. But Here I have used lenth of visitor to have collison intentionally.
+This is a large number, but still small enough so that we can perform multiplication of two values using 64-bit integers.
+
+I am calculating the hash of a string visitor name, which contains only lowercaseuppercase letters. We convert each character of s to an integer. Here I have used the conversion a→1, b→2, …, z→26. Converting a→0 is not a good idea, because then the hashes of the strings a, aa, aaa, … all evaluate to 0.
+
+2.Analysis
+Here HashTable insert insertion and search time complexity is O(1) since it is key based data structure. Elements can be serched easily by key.In case of collision , element will be travere linked list to tail and add there ,time complexiti for traversing is O(n) and O(1) for inserting.
