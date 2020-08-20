@@ -1,7 +1,19 @@
-import numpy
 import matplotlib.pyplot as plt
+import numpy
 import random
 import datetime
+
+
+'''
+creates random matrices of order 10 to 100, with values 0 or 1.
+'''
+
+
+def generate_matrix(n, rel_waight):
+    list1 = [0, 1]
+    matrix = [random.choices(list1, weights=(
+        100 - rel_waight, rel_waight), k=n) for x in range(n)]
+    return matrix
 
 
 '''
@@ -30,8 +42,38 @@ def print_matrix(output_matrix, n, f):
         print("", file=f)
 
 
+def find_transitive_closure(input_matrix, n, algorithm='Warshall’s'):
+    out_text = "Transitive closure using Warshall’s algorithm"
+    start_1 = datetime.datetime.now()
+    transitive_matrix: list
+    if algorithm == 'Warshall’s':
+        transitive_matrix = warshall_transitive_closure(input_matrix, n)
+    else:
+        transitive_matrix = naive_transitive_closure(input_matrix, n)
+
+    time_taken_1 = datetime.datetime.now() - start_1
+    timeTaken = (time_taken_1.total_seconds() * 1000 +
+                 time_taken_1.microseconds) / 1000
+    return timeTaken, transitive_matrix
+
+
 '''
-naive transititve algoritham algoritham 
+apply warshall transitive closure to matrix
+'''
+
+
+def warshall_transitive_closure(input_matrix, n):
+    output_met = [i[:]for i in input_matrix]
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                output_met[i][j] = output_met[i][j] or(
+                    output_met[i][k] and output_met[k][j])
+    return output_met
+
+
+'''
+naive transititve closure algorithm 
 '''
 
 
@@ -40,8 +82,8 @@ def naive_transitive_closure(input_matrix, n):
     b = mat_mult(a, a, n)
     for k in range(n - 1):
         b = mat_mult(b, a, n)
-    output_matrix = b
-    return output_matrix
+    output_met = b
+    return output_met
 
 
 '''
@@ -49,15 +91,41 @@ def naive_transitive_closure(input_matrix, n):
 '''
 
 
-def mat_mult(input_matrix1, input_matrix2, n):
-    output_met = [i[:]for i in input_matrix1]
+def mat_mult(input_met1, input_met2, n):
+    output_met = [i[:]for i in input_met1]
     for k in range(n):
         for i in range(n):
             output_met[k][i] = 0
             for j in range(n):
-                output_met[k][i] = input_matrix1[k][i] or input_matrix2[k][i] or output_met[k][i] or(
-                    input_matrix1[k][j] and input_matrix2[j][i])
+                output_met[k][i] = input_met1[k][i] or input_met2[k][i] or output_met[k][i] or(
+                    input_met1[k][j] and input_met2[j][i])
     return output_met
+
+
+'''
+plot graph
+'''
+
+
+def plot_graph(x, warshallTimeTaken, naiveTimeTaken):
+    plt.rcParams["figure.figsize"] = (20, 8)
+    # plotting the first plot
+    plt.plot(x, warshallTimeTaken, label="Warshall's")
+    # Declaring the points for second line plot
+    # plotting the second plot
+    plt.plot(x, naiveTimeTaken, label="Naive's")
+
+    # Labeling the X-axis
+    plt.xlabel('Order of matrix')
+    # Labeling the Y-axis
+    plt.ylabel('Execution time taken(milliseconds)')
+    # Give a title to the graph
+    plt.title('Warshall’s & Naive’s Execution Time vs Matrix Size')
+
+    # Show a legend on the plot
+    plt.legend()
+
+    plt.show()
 
 
 '''
@@ -67,76 +135,33 @@ Entry function
 
 def main():
     x = []
-    y = []
-    r = []
-    print("finding transitive closure of matrix")
-    print("This program follow below steps: \n 1.Generate random matrox of order 10 to 100 order")
-    print(" 2.Find transitive closure using Naive Algoritham & Warshall Algoritham and comapte time taken by both algoritham \n 3.Plot a graph")
+    warshallTimeTaken = []
+    naiveTimeTaken = []
     rel_waight = 3
     n_start = 10
-    range_1 = 91
-    print(datetime.datetime.now())
-    plt.rcParams["figure.figsize"] = (20, 8)
+    range_1 = 15
     f = open(getfolderPath() + "\\output.txt", "a")
     for p in range(range_1):
         n = n_start + p
         x.append(n)
-        input_mat = generate_matrix(n, rel_waight)
-        print(input_mat)
-        print("Matrix : ", n - 9, " of order ", n, "x", n, " Matrix", file=f)
+        input_matrix = generate_matrix(n, rel_waight)
+        print("Matrix : ", n - 9, " of order ", n, "x", n,  file=f)
         print("Random Generated Input Matrix", file=f)
-        print_matrix(input_mat, n, f)
-        out_text = "Output of Warshall’s algorithm - Transitive closure"
-        start_1 = datetime.datetime.now()
-        mat_algo_2 = warshall_transitive_closure(input_mat, n)
-        end_1 = datetime.datetime.now()
-        time_taken_1 = end_1 - start_1
-        y.append(time_taken_1.total_seconds() * 1000 +
-                 time_taken_1.microseconds / 1000)
-        out_text = "Output of Naive’s algorithm - Transitive closure"
-        start_2 = datetime.datetime.now()
-        mat_algo_1 = naive_transitive_closure(input_mat, n)
-        end_2 = datetime.datetime.now()
-        time_taken_2 = end_2 - start_2
-        r.append(time_taken_2.total_seconds() * 1000 +
-                 time_taken_2.microseconds / 1000)
+        print_matrix(input_matrix, n, f)
+        out_text = "Transitive closure using Warshall’s algorithm"
+        warshall_result = find_transitive_closure(input_matrix, n,"Warshall’s")
+        warshallTimeTaken.append(warshall_result[0])       
+        out_text = "Transitive closure using Naive’s algorithm"
+        naive_result = find_transitive_closure(input_matrix, n, "Naive's")
+        naiveTimeTaken.append(naive_result[0])
         print("Warshall’s algorithm - Transitive closure", file=f)
-        print_matrix(mat_algo_1, n, f)
+        print_matrix(warshall_result[1], n, f)
         print("Naive’s algorithm - Transitive closure", file=f)
-        print_matrix(mat_algo_2, n, f)
+        print_matrix(naive_result[1], n, f)
         print('Warshall’s Output Matrix and Naive’s Output Matrix Match :- ',
-              mat_algo_1 == mat_algo_2, file=f)  # plot
+              warshall_result[1] == naive_result[1], file=f)  # plot
 
-        print('***********************************************************************************************************')  # plot
-
-
-'''
-creates random matrices of order 10 to 100, with values 0 or 1.
-'''
-
-
-def generate_matrix(n, rel_waight):
-    list1 = [0, 1]
-    matrix = [random.choices(list1, weights=(
-        100 - rel_waight, rel_waight), k=n) for x in range(n)]
-    return matrix
-
-
-'''
-apply transitive closure to matrix
-'''
-
-
-def warshall_transitive_closure(input_matrix, n):
-    output_matrix = [i[:]for i in input_matrix]
-    assert (len(input_matrix) == len(input_matrix) for row in input_matrix)
-    n = len(input_matrix)
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                output_matrix[i][j] = input_matrix[i][j] or (
-                    input_matrix[i][k] and input_matrix[k][j])
-    return output_matrix
+    plot_graph(x, warshallTimeTaken, naiveTimeTaken)
 
 
 if __name__ == '__main__':
