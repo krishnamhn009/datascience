@@ -116,7 +116,7 @@ def plot_graph(x, warshallTimeTaken, naiveTimeTaken):
     plt.plot(x, naiveTimeTaken, label="Naive's")
 
     # Labeling the X-axis
-    plt.xlabel('Order of matrix')
+    plt.xlabel('Matrix Size')
     # Labeling the Y-axis
     plt.ylabel('Execution time taken(milliseconds)')
     # Give a title to the graph
@@ -139,7 +139,7 @@ def main():
     naiveTimeTaken = []
     rel_waight = 3
     n_start = 10
-    range_1 = 15
+    range_1 = 91
     f = open(getfolderPath() + "\\output.txt", "a")
     for p in range(range_1):
         n = n_start + p
@@ -149,8 +149,9 @@ def main():
         print("Random Generated Input Matrix", file=f)
         print_matrix(input_matrix, n, f)
         out_text = "Transitive closure using Warshall’s algorithm"
-        warshall_result = find_transitive_closure(input_matrix, n,"Warshall’s")
-        warshallTimeTaken.append(warshall_result[0])       
+        warshall_result = find_transitive_closure(
+            input_matrix, n, "Warshall’s")
+        warshallTimeTaken.append(warshall_result[0])
         out_text = "Transitive closure using Naive’s algorithm"
         naive_result = find_transitive_closure(input_matrix, n, "Naive's")
         naiveTimeTaken.append(naive_result[0])
@@ -161,6 +162,22 @@ def main():
         print('Warshall’s Output Matrix and Naive’s Output Matrix Match :- ',
               warshall_result[1] == naive_result[1], file=f)  # plot
 
+    plt.scatter(x, warshallTimeTaken)
+    plt.title(
+        'Warshall’s algorithm Transitive closure - Execution Time vs Matrix Size', fontsize=20)
+    plt.xlabel('Matrix Size', fontsize=12)
+    plt.ylabel('Execution Time in MiliSeconds',
+               fontsize=16)  # beautify the x - labels
+    plt.gcf().autofmt_xdate()
+    plt.show()  # print(y)# print(r)# plot
+    plt.scatter(x, naiveTimeTaken)
+    plt.title(
+        'Naive’s algorithm Transitive closure - Execution Time vs Matrix Size', fontsize=20)
+    plt.xlabel('Matrix Size', fontsize=12)
+    plt.ylabel('Execution Time in MiliSeconds',
+               fontsize=16)  # beautify the x - labels
+    plt.gcf().autofmt_xdate()
+    plt.show()
     plot_graph(x, warshallTimeTaken, naiveTimeTaken)
 
 
