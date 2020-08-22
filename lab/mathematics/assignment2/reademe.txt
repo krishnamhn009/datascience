@@ -1,0 +1,4 @@
+1.open this folder in command line
+2.run python3 get_transitive_closure.py
+3.random matrices of order 10 to 100 and compare the time taken by Naïve method and Warshall’s Algorithm
+5.line graph is plotted for time taken vs order of matrix
