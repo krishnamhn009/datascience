@@ -156,11 +156,9 @@ def main():
         print("Matrix : ", n - 9, " of order ", n, "x", n,  file=f)
         print("Random Generated Input Matrix", file=f)
         print_matrix(input_matrix, n, f)
-        out_text = "Transitive closure using Warshall’s algorithm"
         warshall_result = find_transitive_closure(
             input_matrix, n, "Warshall’s")
         warshallTimeTaken.append(warshall_result[0])
-        out_text = "Transitive closure using Naive’s algorithm"
         naive_result = find_transitive_closure(input_matrix, n, "Naive's")
         naiveTimeTaken.append(naive_result[0])
         print("Warshall’s algorithm - Transitive closure", file=f)
