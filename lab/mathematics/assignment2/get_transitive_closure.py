@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import random
 import datetime
 
@@ -43,18 +43,17 @@ def print_matrix(output_matrix, n, f):
 
 
 def find_transitive_closure(input_matrix, n, algorithm='Warshall’s'):
-    out_text = "Transitive closure using Warshall’s algorithm"
-    start_1 = datetime.datetime.now()
+    start = datetime.datetime.now()
     transitive_matrix: list
     if algorithm == 'Warshall’s':
         transitive_matrix = warshall_transitive_closure(input_matrix, n)
     else:
         transitive_matrix = naive_transitive_closure(input_matrix, n)
-
-    time_taken_1 = datetime.datetime.now() - start_1
-    timeTaken = (time_taken_1.total_seconds() * 1000 +
-                 time_taken_1.microseconds) / 1000
-    return timeTaken, transitive_matrix
+    end_2 = datetime.datetime.now()
+    timeTaken = end_2 - start
+    timeTakenMilliseconds = (timeTaken.total_seconds() * 1000 +
+                             timeTaken.microseconds / 1000)
+    return timeTakenMilliseconds, transitive_matrix
 
 
 '''
@@ -63,11 +62,24 @@ apply warshall transitive closure to matrix
 
 
 def warshall_transitive_closure(input_matrix, n):
-    output_met = [i[:]for i in input_matrix]
+    output_met = [i[:] for i in input_matrix]
+    '''output_met[][] will be the output matrix that will finally
+        have reachability values.
+        Initialize the solution matrix same as input graph matrix'''
+
+    '''Add all vertices one by one to the set of intermediate
+        vertices.
+         ---> Before start of a iteration, we have reachability value
+         for all pairs of vertices such that the reachability values
+          consider only the vertices in set
+        {0, 1, 2, .. k-1} as intermediate vertices.
+          ----> After the end of an iteration, vertex no. k is
+         added to the set of intermediate vertices and the
+        set becomes {0, 1, 2, .. k}'''
     for k in range(n):
         for i in range(n):
             for j in range(n):
-                output_met[i][j] = output_met[i][j] or(
+                output_met[i][j] = output_met[i][j] or (
                     output_met[i][k] and output_met[k][j])
     return output_met
 
@@ -97,34 +109,30 @@ def mat_mult(input_met1, input_met2, n):
         for i in range(n):
             output_met[k][i] = 0
             for j in range(n):
-                output_met[k][i] = input_met1[k][i] or input_met2[k][i] or output_met[k][i] or(
+                output_met[k][i] = input_met1[k][i] or input_met2[k][i] or output_met[k][i] or (
                     input_met1[k][j] and input_met2[j][i])
     return output_met
 
 
 '''
-plot graph
+plot log log graph
 '''
 
 
 def plot_graph(x, warshallTimeTaken, naiveTimeTaken):
     plt.rcParams["figure.figsize"] = (20, 8)
-    # plotting the first plot
-    plt.plot(x, warshallTimeTaken, label="Warshall's")
-    # Declaring the points for second line plot
-    # plotting the second plot
-    plt.plot(x, naiveTimeTaken, label="Naive's")
-
+    plt.plot()
+    plt.loglog(x, warshallTimeTaken, label="Warshall's")
+    plt.loglog(x, naiveTimeTaken, label="Naive's")
     # Labeling the X-axis
-    plt.xlabel('Matrix Size')
+    plt.xlabel('Matrix Size', fontsize=12)
     # Labeling the Y-axis
-    plt.ylabel('Execution time taken(milliseconds)')
+    plt.ylabel('Execution time taken(milliseconds)', fontsize=16)
     # Give a title to the graph
     plt.title('Warshall’s & Naive’s Execution Time vs Matrix Size')
-
+    plt.gcf().autofmt_xdate()
     # Show a legend on the plot
     plt.legend()
-
     plt.show()
 
 
@@ -162,22 +170,6 @@ def main():
         print('Warshall’s Output Matrix and Naive’s Output Matrix Match :- ',
               warshall_result[1] == naive_result[1], file=f)  # plot
 
-    plt.scatter(x, warshallTimeTaken)
-    plt.title(
-        'Warshall’s algorithm Transitive closure - Execution Time vs Matrix Size', fontsize=20)
-    plt.xlabel('Matrix Size', fontsize=12)
-    plt.ylabel('Execution Time in MiliSeconds',
-               fontsize=16)  # beautify the x - labels
-    plt.gcf().autofmt_xdate()
-    plt.show()  # print(y)# print(r)# plot
-    plt.scatter(x, naiveTimeTaken)
-    plt.title(
-        'Naive’s algorithm Transitive closure - Execution Time vs Matrix Size', fontsize=20)
-    plt.xlabel('Matrix Size', fontsize=12)
-    plt.ylabel('Execution Time in MiliSeconds',
-               fontsize=16)  # beautify the x - labels
-    plt.gcf().autofmt_xdate()
-    plt.show()
     plot_graph(x, warshallTimeTaken, naiveTimeTaken)
 
 
