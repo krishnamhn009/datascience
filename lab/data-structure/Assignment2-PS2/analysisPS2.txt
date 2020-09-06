@@ -1,0 +1,16 @@
+0.Assumption
+input files will have valid values
+
+1.reading input file
+
+I followed object oriented design for represent object.created Mission<class> with properties that will hold Mission details. So I am reading input files and holding data List<Mission> object
+Its given int value in problem statement for value. But It might be float also so I am assuming it float and did computation.
+
+2.Analysis
+I need to  select the missions to be funded having maximize value. I am calcualting value to budget ratio ,selecting mission having higer ratio will  maximize 
+value for fund.
+
+I am using merge sort algorithm to sort list of mission by valueBudgetRatio descending order. So highest value mission will come at first place ,2nd on second place and so on.
+Time complexity of this process is : O(nlogn)
+
+total time complexity = O(n) + O(nlogn) =O(nlogn)
