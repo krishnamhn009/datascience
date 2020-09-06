@@ -13,4 +13,6 @@ value for fund.
 I am using merge sort algorithm to sort list of mission by valueBudgetRatio descending order. So highest value mission will come at first place ,2nd on second place and so on.
 Time complexity of this process is : O(nlogn)
 
+Time complexity to iterate mission : O(n)
+
 total time complexity = O(n) + O(nlogn) =O(nlogn)
